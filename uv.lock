@@ -317,6 +317,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "allure-pytest" },
     { name = "pytest" },
+    { name = "python-dotenv" },
     { name = "selenium" },
     { name = "webdriver-manager" },
 ]
@@ -325,6 +326,7 @@ dependencies = [
 requires-dist = [
     { name = "allure-pytest", specifier = ">=2.16.0" },
     { name = "pytest", specifier = ">=9.0.3" },
+    { name = "python-dotenv", specifier = ">=1.2.2" },
     { name = "selenium", specifier = ">=4.44.0" },
     { name = "webdriver-manager", specifier = ">=4.1.1" },
 ]

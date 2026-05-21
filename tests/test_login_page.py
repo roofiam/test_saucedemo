@@ -1,31 +1,58 @@
 import time
 
 import pytest
-
 from core.config import Config
-from pages.login_page import LoginPage
+from tests.data.login_data import LoginData
 
 
-class TestLogin:
-    def test_login(self, driver):
-        page = LoginPage(driver)
+class TestLoginPage:
 
-        page.open()
-        page.login(Config.USERNAME, Config.PASSWORD)
+
+    def test_successful_login(self, login_page):
+        login_page.login(Config.USERNAME, Config.PASSWORD)
+
+        assert "inventory" in login_page.driver.current_url
+
 
     @pytest.mark.parametrize(
-        "username,password,case_id",
-        [
-            (Config.USERNAME, "random", "wrong_password"),
-            (Config.USERNAME, "123456", "numeric_password"),
-            (Config.USERNAME, "", "empty_password"),
-            ("wrong_user", Config.PASSWORD, "wrong_username"),
-        ],
+        "username,password",
+        LoginData.INVALID_CREDENTIALS,
+        ids=["wrong_user", "invalid_user"]
     )
-    def test_wrong_username_or_password(self, driver, username, password, case_id):
-        page = LoginPage(driver)
+    def test_invalid_login(self, login_page, username, password):
+        login_page.login(username, password)
 
-        page.open()
-        page.login(Config.USERNAME, "random")
-        assert "Username and password do not match any user in this service" in page.get_error_text()
-        time.sleep(10)
+        assert login_page.get_error_text() != ""
+        assert "inventory" not in login_page.driver.current_url
+
+    def test_empty_username(self, login_page):
+        username, password = LoginData.EMPTY_USERNAME[0]
+
+        login_page.login(username, password)
+
+        assert "Username is required" in login_page.get_error_text()
+
+
+    def test_empty_password(self, login_page):
+        username, password = LoginData.EMPTY_PASSWORD[0]
+
+        login_page.login(username, password)
+
+        assert "Password is required" in login_page.get_error_text()
+
+
+    def test_error_message_can_be_closed(self, login_page):
+        login_page.login("wrong_user", "wrong_pass")
+
+        assert login_page.is_error_displayed()
+
+        login_page.close_error()
+
+        assert not login_page.is_error_displayed()
+
+
+    def test_input_error_state(self, login_page):
+        login_page.login("wrong_user", "wrong_pass")
+
+        assert login_page.username_has_error_state()
+        assert login_page.password_has_error_state()

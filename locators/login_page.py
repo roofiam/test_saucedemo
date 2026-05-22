@@ -6,3 +6,6 @@ LOGIN_BUTTON = (By.ID, "login-button")
 
 ERROR_MESSAGE = (By.XPATH, "//h3[@data-test='error']")
 ERROR_CLOSE_BUTTON = (By.CSS_SELECTOR, "[data-test='error-button']")
+
+MENU_BUTTON = (By.ID, "react-burger-menu-btn")
+LOGOUT_BUTTON = (By.ID, "logout_sidebar_link")

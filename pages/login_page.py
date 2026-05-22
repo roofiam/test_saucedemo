@@ -1,31 +1,43 @@
 from locators.login_page import *
 from core.config import Config
+from pages.base_page import BasePage
 
 
-class LoginPage:
-
-    def __init__(self, driver):
-        self.driver = driver
+class LoginPage(BasePage):
 
     def open(self):
         self.driver.get(Config.BASE_URL)
 
     def login(self, username, password):
-        self.driver.find_element(*USERNAME_INPUT).send_keys(username)
-        self.driver.find_element(*PASSWORD_INPUT).send_keys(password)
-        self.driver.find_element(*LOGIN_BUTTON).click()
+        self.type(USERNAME_INPUT, username)
+        self.type(PASSWORD_INPUT, password)
+        self.click(LOGIN_BUTTON)
 
-    def get_error_text(self):
-        return self.driver.find_element(*ERROR_MESSAGE).text
+    def logout(self):
+        self.click(MENU_BUTTON)
+        self.click(LOGOUT_BUTTON)
+
+
+    def is_logged_in(self):
+        return self.is_displayed(MENU_BUTTON)
+
+    def is_login_page(self):
+        return self.is_displayed(LOGIN_BUTTON)
 
     def is_error_displayed(self):
-        return len(self.driver.find_elements(*ERROR_MESSAGE)) > 0
+        return self.is_displayed(ERROR_MESSAGE)
+
+    def get_error_text(self):
+        return self.find(ERROR_MESSAGE).text
 
     def close_error(self):
-        self.driver.find_element(*ERROR_CLOSE_BUTTON).click()
+        self.click(ERROR_CLOSE_BUTTON)
 
     def username_has_error_state(self):
-        return "error" in self.driver.find_element(*USERNAME_INPUT).get_attribute("class")
+        return "error" in self.find(USERNAME_INPUT).get_attribute("class")
 
     def password_has_error_state(self):
-        return "error" in self.driver.find_element(*PASSWORD_INPUT).get_attribute("class")
+        return "error" in self.find(PASSWORD_INPUT).get_attribute("class")
+
+    def get_password_input_type(self):
+        return self.find(PASSWORD_INPUT).get_attribute("type")

@@ -12,3 +12,7 @@ class LoginData:
     EMPTY_PASSWORD = [
         ("any_user", ""),
     ]
+
+    LOCKED_USER = [
+        ("locked_out_user", "secret_sauce"),
+    ]

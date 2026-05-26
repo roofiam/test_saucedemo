@@ -5,6 +5,6 @@ load_dotenv()
 
 
 class Config:
-    USERNAME = os.getenv("USERNAME")
-    PASSWORD = os.getenv("PASSWORD")
+    USERNAME = os.getenv("USER_NAME")
+    PASSWORD = os.getenv("PASS_WORD")
     BASE_URL = os.getenv("BASE_URL")

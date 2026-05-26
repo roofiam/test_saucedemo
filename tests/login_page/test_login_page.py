@@ -1,6 +1,6 @@
 import pytest
 from core.config import Config
-from tests.data.login_data import LoginData
+from tests.login_page.data.login_data import LoginData
 
 
 class TestLoginPage:

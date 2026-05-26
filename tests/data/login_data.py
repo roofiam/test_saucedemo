@@ -1,8 +1,11 @@
+from core.config import Config
+
+
 class LoginData:
 
     INVALID_CREDENTIALS = [
-        ("wrong_user", "wrong_pass"),
-        ("123", "456"),
+        ("wrong_user", Config.PASSWORD),
+        (Config.USERNAME, "456"),
     ]
 
     EMPTY_USERNAME = [

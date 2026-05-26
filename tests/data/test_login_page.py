@@ -7,13 +7,16 @@ class TestLoginPage:
 
     def test_successful_login(self, login_page):
         login_page.login(Config.USERNAME, Config.PASSWORD)
+
         assert login_page.is_logged_in()
 
     def test_login_and_logout_flow(self, login_page):
         login_page.login(Config.USERNAME, Config.PASSWORD)
+
         assert login_page.is_logged_in()
 
         login_page.logout()
+
         assert login_page.is_login_page()
 
     @pytest.mark.parametrize(
@@ -26,19 +29,32 @@ class TestLoginPage:
         assert login_page.is_error_displayed()
         assert login_page.is_login_page()
 
-    def test_empty_username(self, login_page):
-        username, password = LoginData.EMPTY_USERNAME[0]
-
+    @pytest.mark.parametrize(
+        "username,password",
+        LoginData.EMPTY_USERNAME
+    )
+    def test_empty_username(self, login_page, username, password):
         login_page.login(username, password)
 
         assert "Username is required" in login_page.get_error_text()
 
-    def test_empty_password(self, login_page):
-        username, password = LoginData.EMPTY_PASSWORD[0]
-
+    @pytest.mark.parametrize(
+        "username,password",
+        LoginData.EMPTY_PASSWORD
+    )
+    def test_empty_password(self, login_page, username, password):
         login_page.login(username, password)
 
         assert "Password is required" in login_page.get_error_text()
+
+    @pytest.mark.parametrize(
+        "username,password",
+        LoginData.LOCKED_USER
+    )
+    def test_locked_out_user(self, login_page, username, password):
+        login_page.login(username, password)
+
+        assert "locked out" in login_page.get_error_text().lower()
 
     def test_error_message_can_be_closed(self, login_page):
         login_page.login("wrong_user", "wrong_pass")
@@ -51,22 +67,15 @@ class TestLoginPage:
 
     def test_input_error_state(self, login_page):
         username, password = LoginData.INVALID_CREDENTIALS[0]
+
         login_page.login(username, password)
 
         assert login_page.username_has_error_state()
         assert login_page.password_has_error_state()
 
-    @pytest.mark.parametrize(
-        "username,password",
-        LoginData.LOCKED_USER
-    )
-    def test_locked_out_user(self, login_page, username, password):
-        login_page.login(username, password)
-
-        assert "locked out" in login_page.get_error_text().lower()
-
     def test_error_message_disappears_after_successful_login(self, login_page):
         username, password = LoginData.INVALID_CREDENTIALS[0]
+
         login_page.login(username, password)
 
         assert login_page.is_error_displayed()

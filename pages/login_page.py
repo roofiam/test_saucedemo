@@ -25,10 +25,10 @@ class LoginPage(BasePage):
         return self.is_displayed(LOGIN_BUTTON)
 
     def is_error_displayed(self):
-        return self.is_displayed(ERROR_MESSAGE)
+        return len(self.find_all(ERROR_MESSAGE)) > 0
 
     def get_error_text(self):
-        return self.find(ERROR_MESSAGE).text
+        return self.find_visible(ERROR_MESSAGE).text
 
     def close_error(self):
         self.click(ERROR_CLOSE_BUTTON)

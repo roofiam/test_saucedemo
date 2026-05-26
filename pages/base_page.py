@@ -1,3 +1,4 @@
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -24,13 +25,17 @@ class BasePage:
     def find_all(self, locator):
         return self.driver.find_elements(*locator)
 
-    def click(self, locator):
-        self.find_clickable(locator).click()
+    def click(self, locator, timeout=10):
+        self.find_clickable(locator, timeout).click()
 
-    def type(self, locator, text):
-        el = self.find(locator)
+    def type(self, locator, text, timeout=10):
+        el = self.find_visible(locator)
         el.clear()
         el.send_keys(text)
 
-    def is_displayed(self, locator):
-        return len(self.find_all(locator)) > 0
+    def is_displayed(self, locator, timeout=10):
+        try:
+            self.find_visible(locator, timeout)
+            return True
+        except TimeoutException:
+            return False

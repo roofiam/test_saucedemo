@@ -17,9 +17,8 @@ class LoginPage(BasePage):
         self.click(MENU_BUTTON)
         self.click(LOGOUT_BUTTON)
 
-
     def is_logged_in(self):
-        return self.is_displayed(MENU_BUTTON)
+        return "inventory" in self.driver.current_url
 
     def is_login_page(self):
         return self.is_displayed(LOGIN_BUTTON)

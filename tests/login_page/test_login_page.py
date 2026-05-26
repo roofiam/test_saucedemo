@@ -1,6 +1,6 @@
 import pytest
 from core.config import Config
-from tests.login_page.data.login_data import LoginData
+from tests.login_page.data.credentials import Credentials
 
 
 class TestLoginPage:
@@ -21,7 +21,7 @@ class TestLoginPage:
 
     @pytest.mark.parametrize(
         "username,password",
-        LoginData.INVALID_CREDENTIALS
+        Credentials.INVALID_CREDENTIALS
     )
     def test_invalid_login(self, login_page, username, password):
         login_page.login(username, password)
@@ -31,7 +31,7 @@ class TestLoginPage:
 
     @pytest.mark.parametrize(
         "username,password",
-        LoginData.EMPTY_USERNAME
+        Credentials.EMPTY_USERNAME
     )
     def test_empty_username(self, login_page, username, password):
         login_page.login(username, password)
@@ -40,7 +40,7 @@ class TestLoginPage:
 
     @pytest.mark.parametrize(
         "username,password",
-        LoginData.EMPTY_PASSWORD
+        Credentials.EMPTY_PASSWORD
     )
     def test_empty_password(self, login_page, username, password):
         login_page.login(username, password)
@@ -49,7 +49,7 @@ class TestLoginPage:
 
     @pytest.mark.parametrize(
         "username,password",
-        LoginData.LOCKED_USER
+        Credentials.LOCKED_USER
     )
     def test_locked_out_user(self, login_page, username, password):
         login_page.login(username, password)
@@ -66,7 +66,7 @@ class TestLoginPage:
         assert not login_page.is_error_displayed()
 
     def test_input_error_state(self, login_page):
-        username, password = LoginData.INVALID_CREDENTIALS[0]
+        username, password = Credentials.INVALID_CREDENTIALS[0]
 
         login_page.login(username, password)
 
@@ -74,7 +74,7 @@ class TestLoginPage:
         assert login_page.password_has_error_state()
 
     def test_error_message_disappears_after_successful_login(self, login_page):
-        username, password = LoginData.INVALID_CREDENTIALS[0]
+        username, password = Credentials.INVALID_CREDENTIALS[0]
 
         login_page.login(username, password)
 

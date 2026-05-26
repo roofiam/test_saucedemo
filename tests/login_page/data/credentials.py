@@ -1,7 +1,7 @@
 from core.config import Config
 
 
-class LoginData:
+class Credentials:
 
     INVALID_CREDENTIALS = [
         ("wrong_user", Config.PASSWORD),

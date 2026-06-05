@@ -5,7 +5,6 @@ def get_driver():
     options = webdriver.ChromeOptions()
 
     options.add_argument("--start-maximized")
-
     options.add_argument("--disable-features=PasswordLeakDetection")
     options.add_argument("--disable-features=PasswordManagerOnboarding")
 

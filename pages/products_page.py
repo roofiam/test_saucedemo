@@ -67,3 +67,62 @@ class ProductsPage(BasePage):
         self.find_all(PRODUCT_NAMES)[0].click()
 
         return ProductDetailsPage(self.driver)
+
+    def is_add_to_cart_button_displayed(self):
+        return self.is_displayed(ADD_TO_CART_BUTTON)
+
+    def is_remove_button_displayed(self):
+        return self.is_displayed(REMOVE_BUTTON)
+
+    def open_sort_dropdown(self):
+        self.click(SORT_DROPDOWN)
+
+    def is_sort_dropdown_expanded(self):
+        return False
+
+    def open_sidebar(self):
+        self.click(MENU_BUTTON)
+
+    def is_sidebar_displayed(self):
+        return self.is_displayed(SIDEBAR_CLOSE_BUTTON)
+
+    def close_sidebar(self):
+        self.click(SIDEBAR_CLOSE_BUTTON)
+
+    def wait_sidebar_closed(self):
+        return self.wait_invisible(SIDEBAR_CLOSE_BUTTON)
+
+    def get_sidebar_items(self):
+        return [
+            self.find_visible(ALL_ITEMS_LINK).text,
+            self.find_visible(ABOUT_LINK).text,
+            self.find_visible(LOGOUT_LINK).text,
+            self.find_visible(RESET_APP_STATE_LINK).text,
+        ]
+
+    def open_twitter_link(self):
+        self.click(TWITTER_LINK)
+
+    def open_facebook_link(self):
+        self.click(FACEBOOK_LINK)
+
+    def open_linkedin_link(self):
+        self.click(LINKEDIN_LINK)
+
+    def get_current_url(self):
+        return self.driver.current_url
+
+    def click_all_items_sidebar_link(self):
+        self.click(ALL_ITEMS_LINK)
+
+    def click_about_sidebar_link(self):
+        self.click(ABOUT_LINK)
+
+    def click_logout_sidebar_link(self):
+        self.click(LOGOUT_LINK)
+
+    def click_reset_app_state_link(self):
+        self.click(RESET_APP_STATE_LINK)
+
+    def get_current_url(self):
+        return self.driver.current_url

@@ -1,3 +1,6 @@
+import pytest
+
+
 class TestProductsPage:
 
     def test_products_page_is_opened(self, products_page):
@@ -7,17 +10,23 @@ class TestProductsPage:
         assert products_page.get_products_count() > 0
 
     def test_add_product_to_cart(self, products_page):
+        assert products_page.is_add_to_cart_button_displayed()
+
         products_page.add_first_product_to_cart()
 
         assert products_page.get_cart_badge_text() == "1"
+        assert products_page.is_remove_button_displayed()
 
     def test_remove_product_from_cart(self, products_page):
         products_page.add_first_product_to_cart()
+
         assert products_page.get_cart_badge_text() == "1"
+        assert products_page.is_remove_button_displayed()
 
         products_page.remove_product_from_cart()
 
         assert products_page.wait_cart_badge_disappeared()
+        assert products_page.is_add_to_cart_button_displayed()
 
     def test_sort_products_by_name_az(self, products_page):
         products_page.sort_by_name_az()
@@ -60,3 +69,11 @@ class TestProductsPage:
         assert product_details_page.get_product_description() == product_description
         assert product_details_page.get_product_price() == product_price
         assert product_details_page.get_product_image_url() == product_image
+
+    @pytest.mark.xfail(
+        reason="Known bug: sort dropdown arrow click does not open the filter options"
+    )
+    def test_sort_dropdown_arrow_click_opens_options(self, products_page):
+        products_page.open_sort_dropdown()
+
+        assert products_page.is_sort_dropdown_expanded()

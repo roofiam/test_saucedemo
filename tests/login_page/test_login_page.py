@@ -31,31 +31,19 @@ class TestLoginPage:
         assert login_page.is_login_page()
 
     @pytest.mark.parametrize(
-        "username,password",
-        Credentials.EMPTY_USERNAME
+        "username,password,expected_error",
+        Credentials.VALIDATION_ERRORS,
     )
-    def test_empty_username(self, login_page, username, password):
+    def test_login_validation_error(
+            self,
+            login_page,
+            username,
+            password,
+            expected_error,
+    ):
         login_page.login(username, password)
 
-        assert "Username is required" in login_page.get_error_text()
-
-    @pytest.mark.parametrize(
-        "username,password",
-        Credentials.EMPTY_PASSWORD
-    )
-    def test_empty_password(self, login_page, username, password):
-        login_page.login(username, password)
-
-        assert "Password is required" in login_page.get_error_text()
-
-    @pytest.mark.parametrize(
-        "username,password",
-        Credentials.LOCKED_USER
-    )
-    def test_locked_out_user(self, login_page, username, password):
-        login_page.login(username, password)
-
-        assert "locked out" in login_page.get_error_text().lower()
+        assert expected_error.lower() in login_page.get_error_text().lower()
 
     def test_error_message_can_be_closed(self, login_page):
         login_page.login("wrong_user", "wrong_pass")

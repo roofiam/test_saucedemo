@@ -39,3 +39,18 @@ class BasePage:
             return True
         except TimeoutException:
             return False
+
+    def wait_invisible(self, locator, timeout=5):
+        return WebDriverWait(self.driver, timeout).until(
+            EC.invisibility_of_element_located(locator)
+        )
+
+    def get_windows_count(self):
+        return len(self.driver.window_handles)
+
+    def switch_to_new_window(self):
+        self.driver.switch_to.window(self.driver.window_handles[-1])
+
+    def close_current_window(self):
+        self.driver.close()
+        self.driver.switch_to.window(self.driver.window_handles[0])

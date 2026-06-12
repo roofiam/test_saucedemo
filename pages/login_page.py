@@ -1,5 +1,13 @@
-from locators.login_page import *
 from core.config import Config
+from locators.login_page import (
+    ERROR_CLOSE_BUTTON,
+    ERROR_MESSAGE,
+    LOGIN_BUTTON,
+    LOGOUT_BUTTON,
+    MENU_BUTTON,
+    PASSWORD_INPUT,
+    USERNAME_INPUT,
+)
 from pages.base_page import BasePage
 
 

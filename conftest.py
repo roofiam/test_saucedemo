@@ -1,4 +1,5 @@
 import pytest
+
 from core.driver_factory import get_driver
 from pages.login_page import LoginPage
 

@@ -1,4 +1,5 @@
 import pytest
+
 from core.config import Config
 from tests.login_page.data.credentials import Credentials
 

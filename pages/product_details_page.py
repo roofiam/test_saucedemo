@@ -1,4 +1,10 @@
-from locators.product_details_page import *
+from locators.product_details_page import (
+    PRODUCT_DESCRIPTION,
+    PRODUCT_DETAILS_CONTAINER,
+    PRODUCT_IMAGE,
+    PRODUCT_NAME,
+    PRODUCT_PRICE,
+)
 from pages.base_page import BasePage
 
 

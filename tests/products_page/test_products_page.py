@@ -28,33 +28,21 @@ class TestProductsPage:
         assert products_page.wait_cart_badge_disappeared()
         assert products_page.is_add_to_cart_button_displayed()
 
-    def test_sort_products_by_name_az(self, products_page):
-        products_page.sort_by_name_az()
+    @pytest.mark.parametrize(
+        "sort_method,get_items,reverse",
+        [
+            ("sort_by_name_az", "get_product_names", False),
+            ("sort_by_name_za", "get_product_names", True),
+            ("sort_by_price_low_to_high", "get_product_prices", False),
+            ("sort_by_price_high_to_low", "get_product_prices", True),
+        ],
+    )
+    def test_products_sorting(self, products_page, sort_method, get_items, reverse):
+        getattr(products_page, sort_method)()
 
-        product_names = products_page.get_product_names()
+        items = getattr(products_page, get_items)()
 
-        assert product_names == sorted(product_names)
-
-    def test_sort_products_by_name_za(self, products_page):
-        products_page.sort_by_name_za()
-
-        product_names = products_page.get_product_names()
-
-        assert product_names == sorted(product_names, reverse=True)
-
-    def test_sort_products_by_price_low_to_high(self, products_page):
-        products_page.sort_by_price_low_to_high()
-
-        product_prices = products_page.get_product_prices()
-
-        assert product_prices == sorted(product_prices)
-
-    def test_sort_products_by_price_high_to_low(self, products_page):
-        products_page.sort_by_price_high_to_low()
-
-        product_prices = products_page.get_product_prices()
-
-        assert product_prices == sorted(product_prices, reverse=True)
+        assert items == sorted(items, reverse=reverse)
 
     def test_product_details_match_product_card(self, products_page):
         product_name = products_page.get_first_product_name()

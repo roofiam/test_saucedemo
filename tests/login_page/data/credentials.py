@@ -8,14 +8,8 @@ class Credentials:
         (Config.USERNAME, "456"),
     ]
 
-    EMPTY_USERNAME = [
-        ("", "any_password"),
-    ]
-
-    EMPTY_PASSWORD = [
-        ("any_user", ""),
-    ]
-
-    LOCKED_USER = [
-        ("locked_out_user", "secret_sauce"),
+    VALIDATION_ERRORS = [
+        ("", "any_password", "Username is required"),
+        ("any_user", "", "Password is required"),
+        ("locked_out_user", Config.PASSWORD, "locked out"),
     ]

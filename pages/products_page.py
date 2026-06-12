@@ -1,6 +1,26 @@
 from selenium.webdriver.support.select import Select
 
-from locators.products_page import *
+from locators.products_page import (
+    ABOUT_LINK,
+    ADD_TO_CART_BUTTON,
+    ALL_ITEMS_LINK,
+    CART_BADGE,
+    FACEBOOK_LINK,
+    LINKEDIN_LINK,
+    LOGOUT_LINK,
+    MENU_BUTTON,
+    PRODUCT_DESCRIPTIONS,
+    PRODUCT_IMAGES,
+    PRODUCT_ITEMS,
+    PRODUCT_NAMES,
+    PRODUCT_PRICES,
+    PRODUCTS_CONTAINER,
+    REMOVE_BUTTON,
+    RESET_APP_STATE_LINK,
+    SIDEBAR_CLOSE_BUTTON,
+    SORT_DROPDOWN,
+    TWITTER_LINK,
+)
 from pages.base_page import BasePage
 from pages.product_details_page import ProductDetailsPage
 
@@ -123,6 +143,3 @@ class ProductsPage(BasePage):
 
     def click_reset_app_state_link(self):
         self.click(RESET_APP_STATE_LINK)
-
-    def get_current_url(self):
-        return self.driver.current_url

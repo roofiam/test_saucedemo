@@ -7,14 +7,10 @@ lint_check:
 lint_fix:
 	uv run ruff check . --fix
 
-format:
+lint_format:
 	uv run ruff format .
 
 test:
-	uv run pytest
-
-all:
-	uv run ruff check .
 	uv run pytest
 
 docker_build:

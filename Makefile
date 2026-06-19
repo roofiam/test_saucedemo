@@ -1,17 +1,30 @@
-lint:
+sync:
+	uv sync
+
+lint_check:
 	uv run ruff check .
 
-format:
+lint_fix:
 	uv run ruff check . --fix
+
+format:
+	uv run ruff format .
 
 test:
 	uv run pytest
 
-docker-build:
+all:
+	uv run ruff check .
+	uv run pytest
+
+docker_build:
 	docker compose build
 
-docker-test:
+docker_test:
 	docker compose up
 
-docker-test-rebuild:
+docker_test_rebuild:
 	docker compose up --build
+
+docker_down:
+	docker compose down

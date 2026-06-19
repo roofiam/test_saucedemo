@@ -12,7 +12,6 @@ from pages.base_page import BasePage
 
 
 class LoginPage(BasePage):
-
     def open(self):
         self.driver.get(Config.BASE_URL)
 

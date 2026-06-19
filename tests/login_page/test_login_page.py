@@ -5,7 +5,6 @@ from tests.login_page.data.credentials import Credentials
 
 
 class TestLoginPage:
-
     def test_successful_login(self, login_page):
         login_page.login(Config.USERNAME, Config.PASSWORD)
 
@@ -20,10 +19,7 @@ class TestLoginPage:
 
         assert login_page.is_login_page()
 
-    @pytest.mark.parametrize(
-        "username,password",
-        Credentials.INVALID_CREDENTIALS
-    )
+    @pytest.mark.parametrize("username,password", Credentials.INVALID_CREDENTIALS)
     def test_invalid_login(self, login_page, username, password):
         login_page.login(username, password)
 
@@ -35,11 +31,11 @@ class TestLoginPage:
         Credentials.VALIDATION_ERRORS,
     )
     def test_login_validation_error(
-            self,
-            login_page,
-            username,
-            password,
-            expected_error,
+        self,
+        login_page,
+        username,
+        password,
+        expected_error,
     ):
         login_page.login(username, password)
 

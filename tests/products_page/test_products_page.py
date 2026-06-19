@@ -2,7 +2,6 @@ import pytest
 
 
 class TestProductsPage:
-
     def test_products_page_is_opened(self, products_page):
         assert products_page.is_opened()
 

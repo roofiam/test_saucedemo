@@ -1,5 +1,4 @@
 class TestSidebar:
-
     def test_sidebar_contains_expected_items(self, products_page):
         products_page.open_sidebar()
 

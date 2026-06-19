@@ -26,7 +26,6 @@ from pages.product_details_page import ProductDetailsPage
 
 
 class ProductsPage(BasePage):
-
     def is_opened(self):
         return self.is_displayed(PRODUCTS_CONTAINER)
 

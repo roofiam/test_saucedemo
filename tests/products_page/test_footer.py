@@ -2,7 +2,6 @@ import pytest
 
 
 class TestFooter:
-
     @pytest.mark.parametrize(
         "open_method,expected_domains",
         [

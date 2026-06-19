@@ -9,7 +9,6 @@ from pages.base_page import BasePage
 
 
 class ProductDetailsPage(BasePage):
-
     def is_opened(self):
         return self.is_displayed(PRODUCT_DETAILS_CONTAINER)
 

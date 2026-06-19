@@ -19,6 +19,7 @@ def login_page(driver):
     page.open()
     return page
 
+
 @pytest.fixture(scope="function")
 def products_page(login_page):
     login_page.login(Config.USERNAME, Config.PASSWORD)

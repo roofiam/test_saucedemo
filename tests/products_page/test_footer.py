@@ -1,18 +1,38 @@
+import allure
 import pytest
 
 
+@allure.feature("Footer")
 class TestFooter:
+    @allure.story("Social links")
+    @allure.title("{link_name} link opens the correct page")
     @pytest.mark.parametrize(
-        "open_method,expected_domains",
+        "link_name,open_method,expected_domains",
         [
-            ("open_twitter_link", ("twitter", "x.com")),
-            ("open_facebook_link", ("facebook",)),
-            ("open_linkedin_link", ("linkedin",)),
+            pytest.param(
+                "Twitter / X",
+                "open_twitter_link",
+                ("twitter", "x.com"),
+                id="Twitter / X",
+            ),
+            pytest.param(
+                "Facebook",
+                "open_facebook_link",
+                ("facebook",),
+                id="Facebook",
+            ),
+            pytest.param(
+                "LinkedIn",
+                "open_linkedin_link",
+                ("linkedin",),
+                id="LinkedIn",
+            ),
         ],
     )
     def test_social_link_opens_correct_page(
         self,
         products_page,
+        link_name,
         open_method,
         expected_domains,
     ):

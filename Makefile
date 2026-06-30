@@ -22,7 +22,7 @@ allure_report:
 docker_build:
 	docker compose build
 
-docker_run_test:
+docker_test:
 	docker compose run --rm tests uv run pytest
 
 docker_test_report:

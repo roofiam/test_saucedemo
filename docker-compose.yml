@@ -5,6 +5,9 @@ services:
     env_file:
       - .env.docker
 
+    environment:
+      UV_PROJECT_ENVIRONMENT: /tmp/.venv
+
     volumes:
       - .:/app
 

@@ -31,6 +31,7 @@ def pytest_sessionstart(session):
         encoding="utf-8",
     )
 
+
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
     outcome = yield
@@ -38,6 +39,7 @@ def pytest_runtest_makereport(item, call):
 
     if report.when == "call":
         item.rep_call = report
+
 
 def attach_failure_artifacts(driver):
     allure.attach(

@@ -10,6 +10,7 @@ services:
     environment:
       UV_PROJECT_ENVIRONMENT: /tmp/.venv
       UV_CACHE_DIR: /tmp/uv-cache
+
     volumes:
       - .:/app
 

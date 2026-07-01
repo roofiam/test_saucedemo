@@ -10,6 +10,10 @@ services:
     environment:
       UV_PROJECT_ENVIRONMENT: /tmp/.venv
       UV_CACHE_DIR: /tmp/uv-cache
+      HOME: /tmp
+      XDG_CACHE_HOME: /tmp/.cache
+      XDG_CONFIG_HOME: /tmp/.config
+      HEADLESS: "True"
 
     volumes:
       - .:/app

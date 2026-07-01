@@ -2,7 +2,7 @@ services:
   tests:
     build: .
 
-    user: "${UID:-1000}:${GID:-1000}"
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
 
     env_file:
       - .env.docker

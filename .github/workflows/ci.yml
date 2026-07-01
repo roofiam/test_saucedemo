@@ -39,20 +39,25 @@ jobs:
       USER_NAME: ${{ secrets.USER_NAME }}
       PASS_WORD: ${{ secrets.PASS_WORD }}
       BASE_URL: ${{ secrets.BASE_URL }}
+      BROWSER: Chrome
+      ENVIRONMENT: CI
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Build Docker image
-        run: docker compose build
+        run: |
+          HOST_UID=$(id -u) HOST_GID=$(id -g) docker compose build
 
       - name: Run Docker tests
         run: |
-          docker compose run --rm \
+          HOST_UID=$(id -u) HOST_GID=$(id -g) docker compose run --rm \
             -e USER_NAME="$USER_NAME" \
             -e PASS_WORD="$PASS_WORD" \
             -e BASE_URL="$BASE_URL" \
+            -e BROWSER="$BROWSER" \
+            -e ENVIRONMENT="$ENVIRONMENT" \
             -e HEADLESS=True \
             tests uv run pytest --alluredir=allure-results
 

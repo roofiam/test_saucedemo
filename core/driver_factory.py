@@ -7,6 +7,13 @@ from core.config import Config
 def get_driver():
     options = webdriver.ChromeOptions()
 
+    options.set_capability(
+        "goog:loggingPrefs",
+        {
+            "browser": "ALL",
+        },
+    )
+
     if Config.HEADLESS:
         options.add_argument("--headless=new")
         options.add_argument("--window-size=1920,1080")

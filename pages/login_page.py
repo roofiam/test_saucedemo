@@ -1,3 +1,5 @@
+import allure
+
 from core.config import Config
 from locators.login_page import (
     ERROR_CLOSE_BUTTON,
@@ -12,14 +14,17 @@ from pages.base_page import BasePage
 
 
 class LoginPage(BasePage):
+    @allure.step("Open login page")
     def open(self):
         self.driver.get(Config.BASE_URL)
 
     def login(self, username, password):
-        self.type(USERNAME_INPUT, username)
-        self.type(PASSWORD_INPUT, password)
-        self.click(LOGIN_BUTTON)
+        with allure.step(f"Log in as '{username}'"):
+            self.type(USERNAME_INPUT, username)
+            self.type(PASSWORD_INPUT, password)
+            self.click(LOGIN_BUTTON)
 
+    @allure.step("Log out")
     def logout(self):
         self.click(MENU_BUTTON)
         self.click(LOGOUT_BUTTON)
@@ -36,6 +41,7 @@ class LoginPage(BasePage):
     def get_error_text(self):
         return self.find_visible(ERROR_MESSAGE).text
 
+    @allure.step("Close error message")
     def close_error(self):
         self.click(ERROR_CLOSE_BUTTON)
 

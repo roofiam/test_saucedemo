@@ -13,13 +13,16 @@ lint_format:
 test:
 	uv run pytest
 
-test_report:
+clean_allure:
+	rm -rf allure-results allure-report
+
+test_report: clean_allure
 	uv run pytest --alluredir=allure-results
 
 allure_report:
 	allure serve allure-results
 
-docker_test_report:
+docker_test_report: clean_allure
 	HOST_UID=$$(id -u) HOST_GID=$$(id -g) docker compose run --rm tests uv run pytest --alluredir=allure-results
 
 docker_rebuild_report:

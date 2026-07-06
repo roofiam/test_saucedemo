@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 
@@ -43,7 +45,14 @@ def get_driver():
         options.binary_location = Config.CHROME_BIN
 
     if Config.CHROMEDRIVER_PATH:
-        service = Service(Config.CHROMEDRIVER_PATH)
+        Path("allure-results").mkdir(exist_ok=True)
+
+        service = Service(
+            executable_path=Config.CHROMEDRIVER_PATH,
+            service_args=["--verbose"],
+            log_output="allure-results/chromedriver.log",
+        )
+
         return webdriver.Chrome(service=service, options=options)
 
     return webdriver.Chrome(options=options)

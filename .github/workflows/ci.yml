@@ -81,7 +81,7 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           LINT_STATUS: ${{ needs.lint.result }}
           TESTS_STATUS: ${{ needs.tests.result }}
-          BRANCH: ${{ github.ref_name }}
+          BRANCH: ${{ github.head_ref || github.ref_name }}
           AUTHOR: ${{ github.actor }}
           GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: python scripts/telegram_notify.py

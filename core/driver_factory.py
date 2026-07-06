@@ -22,6 +22,8 @@ def get_driver():
         options.add_argument("--user-data-dir=/tmp/chrome-user-data")
         options.add_argument("--data-path=/tmp/chrome-data")
         options.add_argument("--disk-cache-dir=/tmp/chrome-cache")
+        options.add_argument("--disable-crash-reporter")
+        options.add_argument("--disable-crashpad")
     else:
         options.add_argument("--start-maximized")
 

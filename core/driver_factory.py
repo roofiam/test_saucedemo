@@ -26,6 +26,10 @@ def get_driver():
         options.add_argument("--disk-cache-dir=/tmp/chrome-cache")
         options.add_argument("--disable-crash-reporter")
         options.add_argument("--disable-crashpad")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--disable-software-rasterizer")
+        options.add_argument("--disable-extensions")
+        options.add_argument("--remote-debugging-pipe")
     else:
         options.add_argument("--start-maximized")
 

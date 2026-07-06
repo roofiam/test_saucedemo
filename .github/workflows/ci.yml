@@ -41,6 +41,7 @@ jobs:
       BASE_URL: ${{ secrets.BASE_URL }}
       BROWSER: Chrome
       ENVIRONMENT: CI
+      HEADLESS: true
 
     steps:
       - name: Checkout repository

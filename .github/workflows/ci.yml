@@ -51,6 +51,21 @@ jobs:
         run: |
           HOST_UID=$(id -u) HOST_GID=$(id -g) docker compose build
 
+      - name: Debug Chrome environment
+        run: |
+          HOST_UID=$(id -u) HOST_GID=$(id -g) docker compose run --rm tests sh -lc '
+            whoami || true
+            id
+            echo "HEADLESS=$HEADLESS"
+            echo "CHROME_BIN=$CHROME_BIN"
+            echo "CHROMEDRIVER_PATH=$CHROMEDRIVER_PATH"
+            which chromium || true
+            which chromedriver || true
+            chromium --version || true
+            chromedriver --version || true
+            chromium --headless=new --no-sandbox --disable-dev-shm-usage --dump-dom https://example.com | head -n 5
+          '
+
       - name: Run Docker tests
         run: make docker_test_report
 

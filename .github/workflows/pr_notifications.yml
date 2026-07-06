@@ -4,52 +4,39 @@ on:
   pull_request:
     types:
       - opened
+
   pull_request_review:
     types:
       - submitted
 
 jobs:
-  notify-pr-opened:
-    name: Telegram PR opened notification
+  notify-pr:
+    name: Telegram PR notification
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' }}
+
+    if: >
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'pull_request_review' &&
+       github.event.review.state == 'approved')
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Send Telegram notification
-        if: ${{ secrets.TELEGRAM_BOT_TOKEN != '' && secrets.TELEGRAM_CHAT_ID != '' }}
         continue-on-error: true
         env:
-          NOTIFICATION_TYPE: pr_opened
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+
+          NOTIFICATION_TYPE: ${{ github.event_name == 'pull_request' && 'pr_opened' || 'pr_approved' }}
+
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
           AUTHOR: ${{ github.event.pull_request.user.login }}
-          BRANCH: ${{ github.event.pull_request.head.ref }}
-          PR_URL: ${{ github.event.pull_request.html_url }}
-        run: python scripts/telegram_notify.py
-
-  notify-pr-approved:
-    name: Telegram PR approved notification
-    runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request_review' && github.event.review.state == 'approved' }}
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Send Telegram notification
-        if: ${{ secrets.TELEGRAM_BOT_TOKEN != '' && secrets.TELEGRAM_CHAT_ID != '' }}
-        continue-on-error: true
-        env:
-          NOTIFICATION_TYPE: pr_approved
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          PR_TITLE: ${{ github.event.pull_request.title }}
           REVIEW_AUTHOR: ${{ github.event.review.user.login }}
-          PR_URL: ${{ github.event.pull_request.html_url }}
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+
         run: python scripts/telegram_notify.py
+        

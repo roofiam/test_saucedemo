@@ -3,6 +3,7 @@ import os
 import sys
 import urllib.parse
 import urllib.request
+from collections.abc import Callable
 
 
 def required_env(name: str) -> str:
@@ -68,8 +69,8 @@ def build_ci_message() -> str:
 def build_pr_opened_message() -> str:
     pr_number = required_env("PR_NUMBER")
     pr_title = required_env("PR_TITLE")
-    author = required_env("AUTHOR")
-    branch = required_env("BRANCH")
+    author = required_env("PR_AUTHOR")
+    branch = required_env("PR_BRANCH")
     pr_url = required_env("PR_URL")
 
     return "\n".join(
@@ -103,19 +104,30 @@ def build_pr_approved_message() -> str:
     )
 
 
-def main() -> int:
+NOTIFICATION_BUILDERS: dict[str, Callable[[], str]] = {
+    "ci": build_ci_message,
+    "pr_opened": build_pr_opened_message,
+    "pr_approved": build_pr_approved_message,
+}
+
+
+def build_message() -> str:
     notification_type = required_env("NOTIFICATION_TYPE")
 
-    if notification_type == "ci":
-        message = build_ci_message()
-    elif notification_type == "pr_opened":
-        message = build_pr_opened_message()
-    elif notification_type == "pr_approved":
-        message = build_pr_approved_message()
-    else:
-        raise RuntimeError(f"Unsupported notification type: {notification_type}")
+    try:
+        builder = NOTIFICATION_BUILDERS[notification_type]
+    except KeyError as error:
+        supported_types = ", ".join(sorted(NOTIFICATION_BUILDERS))
+        raise RuntimeError(
+            f"Unsupported notification type: {notification_type}. "
+            f"Supported types: {supported_types}"
+        ) from error
 
-    send_telegram_message(message)
+    return builder()
+
+
+def main() -> int:
+    send_telegram_message(build_message())
     return 0
 
 

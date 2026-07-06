@@ -73,7 +73,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Send Telegram notification
-        if: ${{ secrets.TELEGRAM_BOT_TOKEN != '' && secrets.TELEGRAM_CHAT_ID != '' }}
         continue-on-error: true
         env:
           NOTIFICATION_TYPE: ci

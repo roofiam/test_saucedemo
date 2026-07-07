@@ -13,8 +13,9 @@ services:
       BASE_URL: ${BASE_URL}
       BROWSER: ${BROWSER:-Chrome}
       ENVIRONMENT: ${ENVIRONMENT:-local}
-      UV_PROJECT_ENVIRONMENT: /tmp/.venv
+      UV_PROJECT_ENVIRONMENT: /app/.venv
       UV_CACHE_DIR: /tmp/uv-cache
+      UV_LINK_MODE: copy
       HOME: /tmp
       XDG_CACHE_HOME: /tmp/.cache
       XDG_CONFIG_HOME: /tmp/.config
@@ -22,5 +23,9 @@ services:
 
     volumes:
       - .:/app
+      - app_venv:/app/.venv
 
     command: uv run pytest
+
+volumes:
+  app_venv:

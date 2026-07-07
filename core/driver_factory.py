@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 
@@ -21,15 +19,6 @@ def get_driver():
         options.add_argument("--window-size=1920,1080")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--user-data-dir=/tmp/chrome-user-data")
-        options.add_argument("--data-path=/tmp/chrome-data")
-        options.add_argument("--disk-cache-dir=/tmp/chrome-cache")
-        options.add_argument("--disable-crash-reporter")
-        options.add_argument("--disable-crashpad")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--disable-software-rasterizer")
-        options.add_argument("--disable-extensions")
-        options.add_argument("--remote-debugging-pipe")
     else:
         options.add_argument("--start-maximized")
 
@@ -49,14 +38,7 @@ def get_driver():
         options.binary_location = Config.CHROME_BIN
 
     if Config.CHROMEDRIVER_PATH:
-        Path("allure-results").mkdir(exist_ok=True)
-
-        service = Service(
-            executable_path=Config.CHROMEDRIVER_PATH,
-            service_args=["--verbose"],
-            log_output="allure-results/chromedriver.log",
-        )
-
+        service = Service(Config.CHROMEDRIVER_PATH)
         return webdriver.Chrome(service=service, options=options)
 
     return webdriver.Chrome(options=options)

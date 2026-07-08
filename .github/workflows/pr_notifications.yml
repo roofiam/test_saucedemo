@@ -34,9 +34,9 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_TITLE: ${{ github.event.pull_request.title }}
           PR_URL: ${{ github.event.pull_request.html_url }}
-          AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
           REVIEW_AUTHOR: ${{ github.event.review.user.login }}
-          BRANCH: ${{ github.event.pull_request.head.ref }}
+          PR_BRANCH: ${{ github.event.pull_request.head.ref }}
 
         run: python scripts/telegram_notify.py
         

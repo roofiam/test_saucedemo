@@ -1,6 +1,6 @@
 # SauceDemo UI Automation Framework
 
-A UI automation framework for testing [SauceDemo](https://www.saucedemo.com/) built with Python, Selenium and Pytest.
+A UI test automation framework for testing [SauceDemo](https://www.saucedemo.com/) built with Python, Selenium and Pytest.
 
 The project demonstrates a production-like approach to building a maintainable UI automation framework.
 
@@ -18,6 +18,12 @@ The project demonstrates a production-like approach to building a maintainable U
 - Telegram Bot API
 
 ## Getting Started
+
+Install `uv`:
+
+```bash
+pip install uv
+```
 
 Create a local configuration from the example:
 
@@ -51,7 +57,7 @@ Open the Allure report:
 make allure_report
 ```
 
-Run tests in Docker with Allure results:
+Run tests in Docker and generate Allure results:
 
 ```bash
 make docker_test_report

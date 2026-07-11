@@ -41,7 +41,19 @@ def status_icon(status: str) -> str:
     return "✅" if status == "success" else "❌"
 
 
+def common_pr_data() -> dict[str, str]:
+    return {
+        "repository": required_env("REPOSITORY"),
+        "number": required_env("PR_NUMBER"),
+        "title": required_env("PR_TITLE"),
+        "url": required_env("PR_URL"),
+        "branch": required_env("PR_BRANCH"),
+        "author": required_env("PR_AUTHOR"),
+    }
+
+
 def build_ci_message() -> str:
+    event_name = required_env("CI_EVENT_NAME")
     lint_status = required_env("LINT_STATUS")
     tests_status = required_env("TESTS_STATUS")
     branch = required_env("BRANCH")
@@ -49,7 +61,18 @@ def build_ci_message() -> str:
     run_url = required_env("GITHUB_RUN_URL")
 
     is_success = lint_status == "success" and tests_status == "success"
-    title = "✅ <b>CI passed</b>" if is_success else "❌ <b>CI failed</b>"
+
+    titles = {
+        ("pull_request", True): "✅ <b>PR checks passed</b>",
+        ("pull_request", False): "❌ <b>PR checks failed</b>",
+        ("push", True): "✅ <b>Main branch checks passed</b>",
+        ("push", False): "❌ <b>Main branch checks failed</b>",
+    }
+
+    try:
+        title = titles[(event_name, is_success)]
+    except KeyError as error:
+        raise RuntimeError(f"Unsupported CI event: {event_name}") from error
 
     return "\n".join(
         [
@@ -67,52 +90,132 @@ def build_ci_message() -> str:
 
 
 def build_pr_opened_message() -> str:
-    pr_number = required_env("PR_NUMBER")
-    pr_title = required_env("PR_TITLE")
-    author = required_env("PR_AUTHOR")
-    branch = required_env("PR_BRANCH")
-    pr_url = required_env("PR_URL")
+    pr = common_pr_data()
 
     return "\n".join(
         [
-            "🟡 <b>PR opened</b>",
+            "🟣 <b>PR opened</b>",
             "",
-            f"<b>PR:</b> #{html.escape(pr_number)} {html.escape(pr_title)}",
-            f"<b>Author:</b> {html.escape(author)}",
-            f"<b>Branch:</b> {html.escape(branch)}",
+            f"<b>Repository:</b> {html.escape(pr['repository'])}",
+            (f"<b>PR:</b> #{html.escape(pr['number'])} {html.escape(pr['title'])}"),
+            f"<b>Author:</b> {html.escape(pr['author'])}",
+            f"<b>Branch:</b> {html.escape(pr['branch'])}",
             "",
-            f'<a href="{html.escape(pr_url)}">Open PR</a>',
+            f'<a href="{html.escape(pr["url"])}">Open PR</a>',
+        ]
+    )
+
+
+def build_pr_updated_message() -> str:
+    pr = common_pr_data()
+    updated_by = required_env("UPDATED_BY")
+
+    return "\n".join(
+        [
+            "✏️ <b>PR updated</b>",
+            "",
+            f"<b>Repository:</b> {html.escape(pr['repository'])}",
+            (f"<b>PR:</b> #{html.escape(pr['number'])} {html.escape(pr['title'])}"),
+            f"<b>PR author:</b> {html.escape(pr['author'])}",
+            f"<b>Updated by:</b> {html.escape(updated_by)}",
+            f"<b>Branch:</b> {html.escape(pr['branch'])}",
+            "",
+            f'<a href="{html.escape(pr["url"])}">Open PR</a>',
         ]
     )
 
 
 def build_pr_approved_message() -> str:
-    pr_number = required_env("PR_NUMBER")
-    pr_title = required_env("PR_TITLE")
+    pr = common_pr_data()
     reviewer = required_env("REVIEW_AUTHOR")
-    pr_url = required_env("PR_URL")
 
     return "\n".join(
         [
             "✅ <b>PR approved</b>",
             "",
-            f"<b>PR:</b> #{html.escape(pr_number)} {html.escape(pr_title)}",
+            f"<b>Repository:</b> {html.escape(pr['repository'])}",
+            (f"<b>PR:</b> #{html.escape(pr['number'])} {html.escape(pr['title'])}"),
+            f"<b>PR author:</b> {html.escape(pr['author'])}",
             f"<b>Approved by:</b> {html.escape(reviewer)}",
+            f"<b>Branch:</b> {html.escape(pr['branch'])}",
             "",
-            f'<a href="{html.escape(pr_url)}">Open PR</a>',
+            f'<a href="{html.escape(pr["url"])}">Open PR</a>',
         ]
     )
+
+
+def build_pr_merged_message() -> str:
+    pr = common_pr_data()
+    merged_by = required_env("MERGED_BY")
+
+    return "\n".join(
+        [
+            "🔄 <b>PR merged</b>",
+            "",
+            f"<b>Repository:</b> {html.escape(pr['repository'])}",
+            (f"<b>PR:</b> #{html.escape(pr['number'])} {html.escape(pr['title'])}"),
+            f"<b>PR author:</b> {html.escape(pr['author'])}",
+            f"<b>Merged by:</b> {html.escape(merged_by)}",
+            f"<b>Branch:</b> {html.escape(pr['branch'])}",
+            "",
+            f'<a href="{html.escape(pr["url"])}">Open PR</a>',
+        ]
+    )
+
+
+PR_EVENT_TYPES = {
+    ("pull_request", "opened", "", False): "pr_opened",
+    ("pull_request", "synchronize", "", False): "pr_updated",
+    ("pull_request", "closed", "", True): "pr_merged",
+    (
+        "pull_request_review",
+        "submitted",
+        "approved",
+        False,
+    ): "pr_approved",
+}
+
+
+def resolve_pr_notification_type() -> str:
+    event_name = required_env("EVENT_NAME")
+    event_action = required_env("EVENT_ACTION")
+    review_state = os.getenv("REVIEW_STATE", "")
+    pr_merged = os.getenv("PR_MERGED", "").lower() == "true"
+
+    event_key = (
+        event_name,
+        event_action,
+        review_state,
+        pr_merged,
+    )
+
+    try:
+        return PR_EVENT_TYPES[event_key]
+    except KeyError as error:
+        raise RuntimeError(
+            "Unsupported pull request event: "
+            f"name={event_name}, "
+            f"action={event_action}, "
+            f"review_state={review_state}, "
+            f"merged={pr_merged}"
+        ) from error
 
 
 NOTIFICATION_BUILDERS: dict[str, Callable[[], str]] = {
     "ci": build_ci_message,
     "pr_opened": build_pr_opened_message,
+    "pr_updated": build_pr_updated_message,
     "pr_approved": build_pr_approved_message,
+    "pr_merged": build_pr_merged_message,
 }
 
 
+def resolve_notification_type() -> str:
+    return os.getenv("NOTIFICATION_TYPE") or resolve_pr_notification_type()
+
+
 def build_message() -> str:
-    notification_type = required_env("NOTIFICATION_TYPE")
+    notification_type = resolve_notification_type()
 
     try:
         builder = NOTIFICATION_BUILDERS[notification_type]

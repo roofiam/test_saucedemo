@@ -4,6 +4,8 @@ on:
   pull_request:
     types:
       - opened
+      - synchronize
+      - closed
 
   pull_request_review:
     types:
@@ -15,7 +17,11 @@ jobs:
     runs-on: ubuntu-latest
 
     if: >
-      github.event_name == 'pull_request' ||
+      (github.event_name == 'pull_request' &&
+       (github.event.action == 'opened' ||
+        github.event.action == 'synchronize' ||
+        (github.event.action == 'closed' &&
+         github.event.pull_request.merged == true))) ||
       (github.event_name == 'pull_request_review' &&
        github.event.review.state == 'approved')
 
@@ -29,14 +35,21 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
 
-          NOTIFICATION_TYPE: ${{ github.event_name == 'pull_request' && 'pr_opened' || 'pr_approved' }}
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_ACTION: ${{ github.event.action }}
+          REVIEW_STATE: ${{ github.event.review.state }}
+          PR_MERGED: ${{ github.event.pull_request.merged }}
 
+          REPOSITORY: ${{ github.event.repository.name }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_TITLE: ${{ github.event.pull_request.title }}
           PR_URL: ${{ github.event.pull_request.html_url }}
-          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
-          REVIEW_AUTHOR: ${{ github.event.review.user.login }}
           PR_BRANCH: ${{ github.event.pull_request.head.ref }}
+
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          UPDATED_BY: ${{ github.sender.login }}
+          REVIEW_AUTHOR: ${{ github.event.review.user.login }}
+          MERGED_BY: ${{ github.event.pull_request.merged_by.login }}
 
         run: python scripts/telegram_notify.py
         
